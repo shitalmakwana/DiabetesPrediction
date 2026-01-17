@@ -1,0 +1,40 @@
+#front end library -   flask,streamlit, django, jsreact
+import streamlit as st
+import pickle 
+import pandas as pd
+from sklearn.metrics import accuracy_score,  precision_score, recall_score
+from sklearn.metrics import f1_score, confusion_matrix
+from sklearn.metrics import ConfusionMatrixDisplay
+
+st.title("Diabetic Prediction App sung ML for the prediction of the diabetes in the patient")
+
+
+
+rf_mod=pickle.load(open('model_rf.pkl','rb'))
+
+
+l=['Pregnancies', 'Glucose', 'BloodPressure', 'SkinThickness', 'Insulin',
+       'BMI', 'DiabetesPedigreeFunction', 'Age']
+
+
+#create empty dictionary to take input from user
+input_data={}
+for i in l:
+    st.number_input(f'Enter the value for {i}',key=i,value=0.0)
+    input_data[i]=st.session_state[i]
+
+unknown_data=pd.DataFrame(input_data,index=[0])
+
+
+    
+if st.button('Predict the health status of the patient'):
+    result=rf_mod.predict(unknown_data)
+
+    if result[0]==0:
+        st.subheader(f'The predicted health status of the patient isNon-Diabetic)')
+    else:
+        st.subheader(f'The predicted health status of the patient is: {result[0]} (Diabetic)')
+
+
+
+   
